@@ -2,6 +2,8 @@ import random
 import telebot
 from telebot import types
 
+# Имя бота для поиска в телеграме: gbpysem9
+
 bot = telebot.TeleBot("токен", parse_mode=None)
 # заменить на 5721053114: и AAF7QjMXNL8ESOwdi-irbfgURHVAckzfMTg
 
