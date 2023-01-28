@@ -2,7 +2,7 @@ import random
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot("токен", parse_mode=None)
+bot = telebot.TeleBot("token", parse_mode=None)
 # заменить на 5844258519: и AAH1P_G4oxMj8-OQxBpMmfjeWR1FZYEtE7A
 
 hiMess = "Это калькулятор!"
