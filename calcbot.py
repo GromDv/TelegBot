@@ -2,8 +2,7 @@ import random
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot("токен", parse_mode=None)
-# заменить на 5721053114: и AAF7QjMXNL8ESOwdi-irbfgURHVAckzfMTg
+bot = telebot.TeleBot("5844258519:AAH1P_G4oxMj8-OQxBpMmfjeWR1FZYEtE7A", parse_mode=None) # You can set parse_mode by default. HTML or MARKDOWN
 
 spr3 = lambda nums,max: max-1 if nums%max==0 else nums%max - 1
 spr2 = lambda nums,max: random.randint(1,max) if nums%max==1 else spr3(nums,max)
