@@ -1,5 +1,6 @@
 import telebot
 from telebot import types
+import time
 
 # Имя бота для поиска в телеграме: gbpysem9-2
 
@@ -29,12 +30,22 @@ def send_welcome(message):
     button_message(message)
 
 def send_mess(chat, mess):
-    markup = types.ReplyKeyboardMarkup(row_width=4,resize_keyboard=True, one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(row_width=6,resize_keyboard=True)
     item1 = types.KeyboardButton("+")
     item2 = types.KeyboardButton("-")
     item3 = types.KeyboardButton("*")
     item4 = types.KeyboardButton("/")
     markup.add(item1,item2,item3,item4)
+    if CalcComplex == 0:
+        item5 = types.KeyboardButton("%")
+        item6 = types.KeyboardButton("//")
+        markup.add(item5,item6)
+    bot.send_message(chat, mess, reply_markup=markup)
+
+def send_mess_nokeyb(chat, mess):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = " "
+    markup.add(item1)
     bot.send_message(chat, mess, reply_markup=markup)
 
 def oper_message(chat, mess):
@@ -50,6 +61,19 @@ def send_final(chat, mess):
     item1 = types.KeyboardButton("Сначала")
     markup.add(item1)
     bot.send_message(chat, mess, reply_markup=markup)
+
+def log_file(mes, res):
+    f = open("log_file.txt", 'a')
+    stim = time.localtime()
+    logStr = f"{stim.tm_mday}/{stim.tm_mon} {stim.tm_hour}:{stim.tm_min}:{stim.tm_sec} "
+    logStr += f"Chat_ID:{mes.chat.id} "
+    if CalcComplex == 0:
+        logStr += "Рациональные "
+    else:
+        logStr += "Коплексные "
+    logStr += f"OP:{num1}{mes.text}{num2}={res}\n"
+    f.write(logStr)
+    f.close()
     
 @bot.message_handler(content_types='text')
 def message_reply(message):
@@ -61,13 +85,14 @@ def message_reply(message):
         CalcComplex = 0
         num1 = 0
         num2 = 0
-        send_mess(message.chat.id, "Введите первое число: ")
+        send_mess_nokeyb(message.chat.id, "Введите первое число: ")
+        #bot.send_message(message, "Введите первое число:")
         flag1 = 1
     elif message.text=="Считать комплексные":
         CalcComplex = 1
         num1 = 0
         num2 = 0
-        send_mess(message.chat.id, "Введите первое число: ")
+        send_mess_nokeyb(message.chat.id, "Введите первое число: ")
         flag1 = 1
 
     elif message.text=="Нет":
@@ -76,12 +101,22 @@ def message_reply(message):
         send_final(message.chat.id,'Успехов!')
     elif message.text=="+":
         oper_message(message.chat.id, "Сумма = "+ str(num1 + num2))
+        log_file(message,str(num1 + num2))
     elif message.text=="-":
         oper_message(message.chat.id, "Разность = "+ str(num1 - num2))
+        log_file(message,str(num1 - num2))
     elif message.text=="*":
         oper_message(message.chat.id, "Произведение = "+ str(num1 * num2))
+        log_file(message,str(num1 * num2))
     elif message.text=="/":
         oper_message(message.chat.id, "Частное = "+ str(num1 / num2))
+        log_file(message,str(num1 / num2))
+    elif message.text=="//":
+        oper_message(message.chat.id, "Целое частное = "+ str(num1 // num2))
+        log_file(message,str(num1 // num2))
+    elif message.text=="%":
+        oper_message(message.chat.id, "Остаток от деления = "+ str(num1 % num2))
+        log_file(message,str(num1 % num2))
         
 
     else:
@@ -90,7 +125,7 @@ def message_reply(message):
                 num1 = int(message.text)
             else:
                 num1 = complex(message.text)
-            send_mess(message.chat.id, "Введите второе число: ")
+            send_mess_nokeyb(message.chat.id, "Введите второе число: ")
             flag1 = 0
             flag2 = 1
         elif flag2 == 1:
